@@ -1,8 +1,10 @@
 import {configureStore} from '@reduxjs/toolkit';
+import {formReducer} from '../store/contactsFormSlice';
 
 export const store = configureStore({
   reducer: {
     // contacts: contactsReducer,
+    form: formReducer,
   }
 });
 
