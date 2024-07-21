@@ -4,6 +4,16 @@
   box-sizing: border-box;
 }
 
+:root {
+  --dark-color: #18172B;
+  --light-dark-color: #29284b;
+  --brand-color: #4A90E2;
+  --dark-brand-color: #2b6cb7;
+  --white-color: #fff;
+  --red-color: #e7051e;
+  --dark-red-color: #c70518;
+}
+
 body {
   font-family: Arial, sans-serif;
   margin: 0;
