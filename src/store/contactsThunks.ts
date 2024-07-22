@@ -10,9 +10,9 @@ export const contactsGetData =
       const response = await axiosApi<{ [key: string]: MutationApiFormData }>('/contacts.json');
 
       if (response.data !== null) {
-        return Object.keys(response.data).map((key) => ({
-          key,
+        return Object.keys(response.data).map(key => ({
           ...response.data[key],
+          id: key,
         }));
       } else {
         return [];
@@ -23,6 +23,6 @@ export const contactsGetData =
 export const contactsDeleteData = createAsyncThunk<void, string, { state: RootState }>(
   'contacts/contactsDeleteData',
   async (id: string) => {
-    await axiosApi<MutationApiFormData>(`/contacts${id}.json`);
+    await axiosApi.delete<MutationApiFormData>(`/contacts/${id}.json`);
   }
 );

@@ -9,6 +9,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<Home/>}/>
       <Route path="/new-contact" element={<PageContactForm/>}/>
+      <Route path="/contact/edit/:id" element={<PageContactForm/>}/>
       <Route path="*" element={<PageNotFound/>}/>
     </Routes>
   );

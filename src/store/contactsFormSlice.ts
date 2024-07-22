@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {ApiFormData} from '../types';
-import {postFormData, updateFormData} from './contactsFormThunks';
+import {getFormData, postFormData} from './contactsFormThunks';
 
 export interface FormState {
   data: ApiFormData;
@@ -43,17 +43,17 @@ export const formSlice = createSlice({
       state.postIsError = true;
     });
 
-    builder.addCase(updateFormData.pending, (state: FormState) => {
+    builder.addCase(getFormData.pending, (state: FormState) => {
       state.updateIsError = false;
       state.updateIsLoading = true;
     });
-    builder.addCase(updateFormData.fulfilled, (state: FormState, action: PayloadAction<ApiFormData | undefined>) => {
+    builder.addCase(getFormData.fulfilled, (state: FormState, action: PayloadAction<ApiFormData | undefined>) => {
       state.updateIsLoading = false;
       if (action.payload) {
         state.data = action.payload;
       }
     });
-    builder.addCase(updateFormData.rejected, (state: FormState) => {
+    builder.addCase(getFormData.rejected, (state: FormState) => {
       state.updateIsLoading = false;
       state.updateIsError = true;
     });

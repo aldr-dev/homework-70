@@ -9,7 +9,7 @@ import {
   selectPostIsLoading, selectUpdateIsError,
   selectUpdateIsLoading
 } from '../../store/contactsFormSlice';
-import {postFormData, updateFormData} from '../../store/contactsFormThunks';
+import {getFormData, postFormData, updateFormData} from '../../store/contactsFormThunks';
 import {Hourglass, ThreeDots} from 'react-loader-spinner';
 import {ApiFormData} from '../../types';
 import {toast} from 'react-toastify';
@@ -21,7 +21,7 @@ const ContactForm = () => {
   const postIsLoading = useAppSelector(selectPostIsLoading);
   const updateIsLoading = useAppSelector(selectUpdateIsLoading);
   const postIsError = useAppSelector(selectPostIsError);
-  const updateIsError =  useAppSelector(selectUpdateIsError);
+  const updateIsError = useAppSelector(selectUpdateIsError);
   const userDefaultPhoto = 'https://j36949281.myjino.ru/userDefaultPhoto.jpg';
 
   useEffect(() => {
@@ -29,7 +29,10 @@ const ContactForm = () => {
       toast.error('An unexpected error occurred, please try again later.');
       console.error('An unexpected error occurred, please try again later.');
     }
-  }, [postIsError, updateIsError]);
+    if (id) {
+      dispatch(getFormData(id));
+    }
+  }, [postIsError, updateIsError, dispatch, id]);
 
   const onFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
@@ -41,7 +44,7 @@ const ContactForm = () => {
 
     if (Object.values(data).every(value => value.trim().length > 0)) {
       if (id) {
-        dispatch(updateFormData(id));
+        dispatch(updateFormData({id, data}));
       } else {
         dispatch(postFormData(data));
       }
@@ -54,10 +57,10 @@ const ContactForm = () => {
       {updateIsLoading ? (
         <Hourglass
           visible={true}
-          height="80"
-          width="80"
+          height="50"
+          width="50"
           ariaLabel="hourglass-loading"
-          colors={[' #4A90E2', ' #4A90E2']}
+          colors={['#4A90E2', '#4A90E2']}
         />
       ) : (
         <form onSubmit={onFormSubmit} className="contact-form">
