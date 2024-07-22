@@ -11,6 +11,7 @@ import {
 } from '../../store/contactsFormSlice';
 import {postFormData, updateFormData} from '../../store/contactsFormThunks';
 import {Hourglass, ThreeDots} from 'react-loader-spinner';
+import {ApiFormData} from '../../types';
 
 const ContactForm = () => {
   const {id} = useParams();
@@ -22,7 +23,7 @@ const ContactForm = () => {
 
   const onFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
-    dispatch(dataForm({name, value}));
+    dispatch(dataForm({name: name as keyof ApiFormData, value}));
   };
 
   const onFormSubmit = (event: React.FormEvent) => {

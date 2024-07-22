@@ -2,8 +2,9 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 import {ApiFormData} from '../types';
 import axiosApi from '../axiosApi';
 import {toast} from 'react-toastify';
+import {RootState} from '../app/store';
 
-export const postFormData = createAsyncThunk<void, ApiFormData>(
+export const postFormData = createAsyncThunk<void, ApiFormData, {state: RootState}>(
   'form/postFormData', async (data: ApiFormData) => {
     try {
       const response = await axiosApi.post<ApiFormData>('/contacts.json', data);
@@ -20,7 +21,7 @@ export const postFormData = createAsyncThunk<void, ApiFormData>(
   }
 );
 
-export const updateFormData = createAsyncThunk<ApiFormData, string>(
+export const updateFormData = createAsyncThunk<ApiFormData | undefined, string, {state: RootState}>(
   'form/updateFormData', async (id: string) => {
     try {
       const response = await axiosApi.get<ApiFormData>(`/contacts/${id}.json`);
