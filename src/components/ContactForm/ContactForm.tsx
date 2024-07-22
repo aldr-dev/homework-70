@@ -1,17 +1,18 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import './ContactForm.css';
 import {Link, useParams} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {
   dataForm,
   resetDataForm,
-  selectFormData,
-  selectPostIsLoading,
+  selectFormData, selectPostIsError,
+  selectPostIsLoading, selectUpdateIsError,
   selectUpdateIsLoading
 } from '../../store/contactsFormSlice';
 import {postFormData, updateFormData} from '../../store/contactsFormThunks';
 import {Hourglass, ThreeDots} from 'react-loader-spinner';
 import {ApiFormData} from '../../types';
+import {toast} from 'react-toastify';
 
 const ContactForm = () => {
   const {id} = useParams();
@@ -19,7 +20,16 @@ const ContactForm = () => {
   const data = useAppSelector(selectFormData);
   const postIsLoading = useAppSelector(selectPostIsLoading);
   const updateIsLoading = useAppSelector(selectUpdateIsLoading);
+  const postIsError = useAppSelector(selectPostIsError);
+  const updateIsError =  useAppSelector(selectUpdateIsError);
   const userDefaultPhoto = 'https://j36949281.myjino.ru/userDefaultPhoto.jpg';
+
+  useEffect(() => {
+    if (postIsError || updateIsError) {
+      toast.error('An unexpected error occurred, please try again later.');
+      console.error('An unexpected error occurred, please try again later.');
+    }
+  }, [postIsError, updateIsError]);
 
   const onFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;

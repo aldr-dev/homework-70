@@ -6,12 +6,16 @@ export interface FormState {
   data: ApiFormData;
   postIsLoading: boolean;
   updateIsLoading: boolean;
+  postIsError: boolean;
+  updateIsError: boolean;
 }
 
 const initialState: FormState = {
   data: {name: '', phone: '', email: '', photo: ''},
   postIsLoading: false,
   updateIsLoading: false,
+  postIsError: false,
+  updateIsError: false,
 };
 
 export const formSlice = createSlice({
@@ -28,6 +32,7 @@ export const formSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(postFormData.pending, (state: FormState) => {
+      state.postIsError = false;
       state.postIsLoading = true;
     });
     builder.addCase(postFormData.fulfilled, (state: FormState) => {
@@ -35,9 +40,11 @@ export const formSlice = createSlice({
     });
     builder.addCase(postFormData.rejected, (state: FormState) => {
       state.postIsLoading = false;
+      state.postIsError = true;
     });
 
     builder.addCase(updateFormData.pending, (state: FormState) => {
+      state.updateIsError = false;
       state.updateIsLoading = true;
     });
     builder.addCase(updateFormData.fulfilled, (state: FormState, action: PayloadAction<ApiFormData | undefined>) => {
@@ -48,12 +55,15 @@ export const formSlice = createSlice({
     });
     builder.addCase(updateFormData.rejected, (state: FormState) => {
       state.updateIsLoading = false;
+      state.updateIsError = true;
     });
   },
   selectors: {
     selectFormData: (state: FormState) => state.data,
     selectPostIsLoading: (state: FormState) => state.postIsLoading,
     selectUpdateIsLoading: (state: FormState) => state.updateIsLoading,
+    selectPostIsError: (state: FormState) => state.postIsError,
+    selectUpdateIsError: (state: FormState) => state.updateIsError,
   },
 });
 
@@ -66,4 +76,6 @@ export const {
 export const { selectFormData,
   selectPostIsLoading,
   selectUpdateIsLoading,
+  selectPostIsError,
+  selectUpdateIsError,
 } = formSlice.selectors;

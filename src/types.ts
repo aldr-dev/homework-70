@@ -5,6 +5,6 @@ export interface ApiFormData {
   photo: string;
 }
 
-export interface MutationApiFormData {
-  [id: string]: ApiFormData;
+export interface MutationApiFormData extends ApiFormData {
+ id: string;
 }
