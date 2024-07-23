@@ -1,7 +1,7 @@
 import Layout from '../../components/Layout/Layout';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {contactsGetData} from '../../store/contactsThunks';
-import {selectContactsData, selectGetIsError, selectGetIsLoading} from '../../store/contactsSlice';
+import {selectContactsData, selectDeleteIsError, selectGetIsError, selectIsLoading} from '../../store/contactsSlice';
 import {useEffect} from 'react';
 import Card from '../../components/Card/Card';
 import {MagnifyingGlass} from 'react-loader-spinner';
@@ -10,15 +10,16 @@ import {toast} from 'react-toastify';
 const Home = () => {
   const dispatch = useAppDispatch();
   const contactsData = useAppSelector(selectContactsData);
-  const getIsLoading = useAppSelector(selectGetIsLoading);
+  const getIsLoading = useAppSelector(selectIsLoading);
   const getIsError = useAppSelector(selectGetIsError);
+  const deleteIsError = useAppSelector(selectDeleteIsError);
 
   useEffect(() => {
-    if (getIsError) {
+    if (getIsError || deleteIsError) {
       toast.error('An unexpected error occurred, please try again later.');
       console.error('An unexpected error occurred, please try again later.');
     }
-  }, [getIsError]);
+  }, [getIsError, deleteIsError]);
 
 
   useEffect(() => {

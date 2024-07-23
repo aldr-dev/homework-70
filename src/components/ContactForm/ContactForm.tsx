@@ -1,13 +1,17 @@
 import React, {useEffect} from 'react';
 import './ContactForm.css';
-import {Link, useParams} from 'react-router-dom';
+import {Link, useLocation, useParams} from 'react-router-dom';
 import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {
   dataForm,
   resetDataForm,
-  selectFormData, selectPostIsError,
-  selectPostIsLoading, selectUpdateIsError,
-  selectUpdateIsLoading
+  selectFormData,
+  selectGetIsError,
+  selectGetIsLoading,
+  selectGetUpdateIsError,
+  selectGetUpdateIsLoading,
+  selectPostIsError,
+  selectPostIsLoading,
 } from '../../store/contactsFormSlice';
 import {getFormData, postFormData, updateFormData} from '../../store/contactsFormThunks';
 import {Hourglass, ThreeDots} from 'react-loader-spinner';
@@ -15,24 +19,30 @@ import {ApiFormData} from '../../types';
 import {toast} from 'react-toastify';
 
 const ContactForm = () => {
+  const location = useLocation();
   const {id} = useParams();
   const dispatch = useAppDispatch();
   const data = useAppSelector(selectFormData);
   const postIsLoading = useAppSelector(selectPostIsLoading);
-  const updateIsLoading = useAppSelector(selectUpdateIsLoading);
   const postIsError = useAppSelector(selectPostIsError);
-  const updateIsError = useAppSelector(selectUpdateIsError);
+  const getIsLoading = useAppSelector(selectGetIsLoading);
+  const getIsError = useAppSelector(selectGetIsError);
+  const getUpdateIsLoading = useAppSelector(selectGetUpdateIsLoading);
+  const getUpdateIsError = useAppSelector(selectGetUpdateIsError);
   const userDefaultPhoto = 'https://j36949281.myjino.ru/userDefaultPhoto.jpg';
 
   useEffect(() => {
-    if (postIsError || updateIsError) {
+    if (postIsError || getIsError || getUpdateIsError) {
       toast.error('An unexpected error occurred, please try again later.');
       console.error('An unexpected error occurred, please try again later.');
     }
     if (id) {
       dispatch(getFormData(id));
     }
-  }, [postIsError, updateIsError, dispatch, id]);
+    if (location.pathname === '/new-contact') {
+      dispatch(resetDataForm());
+    }
+  }, [postIsError, getIsError, getUpdateIsError, dispatch, id, location.pathname]);
 
   const onFieldChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {name, value} = event.target;
@@ -54,7 +64,7 @@ const ContactForm = () => {
 
   return (
     <>
-      {updateIsLoading ? (
+      {getIsLoading ? (
         <Hourglass
           visible={true}
           height="50"
@@ -64,7 +74,7 @@ const ContactForm = () => {
         />
       ) : (
         <form onSubmit={onFormSubmit} className="contact-form">
-          <h2 className="contact-form-title">Add new contact</h2>
+          <h2 className="contact-form-title">{id ? 'Edit contact' : 'Add new contact'}</h2>
           <div className="contact-form-row">
             <label htmlFor="name" className="contact-form-label">Name:</label>
             <input
@@ -120,8 +130,8 @@ const ContactForm = () => {
             </div>
           </div>
           <div className="contact-form-row">
-            <button type="submit" disabled={postIsLoading} className="contact-form-button save">
-              {(postIsLoading ? (
+            <button type="submit" disabled={postIsLoading || getUpdateIsLoading} className="contact-form-button save">
+              {(postIsLoading || getUpdateIsLoading ? (
                 <ThreeDots
                   visible={true}
                   height="30"

@@ -11,8 +11,11 @@ export const postFormData = createAsyncThunk<void, ApiFormData, { state: RootSta
 
 export const getFormData = createAsyncThunk<ApiFormData | undefined, string, { state: RootState }>(
   'form/getFormData', async (id) => {
-    const response = await axiosApi.get<ApiFormData>(`/contacts/${id}.json`);
-    return response.data;
+    const response = await axiosApi.get<ApiFormData | undefined>(`/contacts/${id}.json`);
+
+    if (response.data !== undefined) {
+      return response.data;
+    }
   }
 );
 

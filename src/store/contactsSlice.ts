@@ -1,17 +1,19 @@
 import {MutationApiFormData} from '../types';
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {contactsGetData} from './contactsThunks';
+import {contactsDeleteData, contactsGetData} from './contactsThunks';
 
 export interface ContactsState {
   contactsData: MutationApiFormData [];
-  getIsLoading: boolean;
+  isLoading: boolean;
   getIsError: boolean;
+  deleteIsError: boolean;
 }
 
 const initialState: ContactsState  = {
   contactsData: [],
-  getIsLoading: false,
+  isLoading: false,
   getIsError: false,
+  deleteIsError: false,
 };
 
 const contactsSlice = createSlice({
@@ -25,23 +27,34 @@ const contactsSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(contactsGetData.pending, (state: ContactsState ) => {
       state.getIsError = false;
-      state.getIsLoading = true;
+      state.isLoading = true;
     });
     builder.addCase(contactsGetData.fulfilled, (state: ContactsState, action: PayloadAction<MutationApiFormData[] | null> ) => {
-      state.getIsLoading = false;
+      state.isLoading = false;
       if (action.payload !== null) {
         state.contactsData = action.payload;
       }
     });
     builder.addCase(contactsGetData.rejected, (state: ContactsState ) => {
-      state.getIsLoading = false;
+      state.isLoading = false;
       state.getIsError = true;
+    });
+
+    builder.addCase(contactsDeleteData.pending, (state: ContactsState ) => {
+      state.deleteIsError = false;
+    });
+    builder.addCase(contactsDeleteData.fulfilled, (state: ContactsState ) => {
+      state.deleteIsError = false;
+    });
+    builder.addCase(contactsDeleteData.rejected, (state: ContactsState ) => {
+      state.deleteIsError = true;
     });
   },
   selectors: {
     selectContactsData: (state: ContactsState) => state.contactsData,
-    selectGetIsLoading: (state: ContactsState) => state.getIsLoading,
+    selectIsLoading: (state: ContactsState) => state.isLoading,
     selectGetIsError: (state: ContactsState) => state.getIsError,
+    selectDeleteIsError: (state: ContactsState) => state.deleteIsError,
   }
 });
 
@@ -49,6 +62,7 @@ export const contactsReducer = contactsSlice.reducer;
 export const {updateStateContactData} = contactsSlice.actions;
 export const {
   selectContactsData,
-  selectGetIsLoading,
+  selectIsLoading,
   selectGetIsError,
+  selectDeleteIsError,
 } = contactsSlice.selectors;
