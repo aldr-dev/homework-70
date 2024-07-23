@@ -16,9 +16,12 @@ const Modal: React.FC<Props> = ({isOpen, onClose, contact}) => {
   const dispatch = useAppDispatch();
 
   const handleDeleteContact = () => {
-    dispatch(contactsDeleteData(contact.id));
-    dispatch(updateStateContactData(contact.id));
-    onClose(false);
+    const confirmDelete = confirm('Are you sure you want to delete this contact?');
+    if (confirmDelete) {
+      dispatch(contactsDeleteData(contact.id));
+      dispatch(updateStateContactData(contact.id));
+      onClose(false);
+    }
   };
 
   return (
